@@ -1,4 +1,4 @@
-Stripped down version of tw+
+Stripped down version of tw+ by https://github.com/Pointer31/tw_plus
 
 # tw_plus
 Modification of tw+ server by teetime, for the game Teeworlds.
