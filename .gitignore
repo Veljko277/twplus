@@ -2,8 +2,8 @@ bam
 bam-0.4.0
 .bam
 config.lua
-scripts/datasrc/__pycache__
-scripts/datasrc/*.pyc
+scripts/__pycache__
+scripts/*.pyc
 objs
 src/game/generated
 .vscode
