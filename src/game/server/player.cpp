@@ -119,7 +119,7 @@ void CPlayer::Tick()
 		else if(m_Spawning && m_RespawnTick <= Server()->Tick())
 			TryRespawn();
 
-		if (m_isBot >= 2) { 
+		if (m_isBot >= 2) {
 			// >=2 means the AI will shoot and maybe move, instead of being a dummy
 			// if there are no clients connected, the bots will idle
 			if (GameServer()->m_ClientCount <= 0) {
@@ -142,7 +142,7 @@ void CPlayer::Tick()
 				input.m_TargetX = (rand() % 128) - 64; // look randomly
 				input.m_TargetY = (rand() % 128) - 64;
 				input.m_Jump = false;
-				input.m_Fire = true;	
+				input.m_Fire = true;
 				if (!GameServer()->m_pController->IsInstagib()) // make non-automatic weapons work, but still have ammo reload work in instagib
 					input.m_Fire = GameServer()->Server()->Tick() % (2) == 1;
 				input.m_Hook = false;
@@ -168,7 +168,7 @@ void CPlayer::Tick()
 						if (m_isBot == 4)
 							smallestDistance = 750.0;
 						m_botAggro = -1;
-						
+
 						for (int i = 0; i < MAX_CLIENTS; i++) {
 							if (i != m_ClientID && GameServer()->m_apPlayers[i] && GameServer()->m_apPlayers[i]->GetCharacter()) {
 								vec2 pos = GameServer()->m_apPlayers[i]->GetCharacter()->m_Pos;
@@ -190,21 +190,21 @@ void CPlayer::Tick()
 							if (m_isBot >= 5 || m_ticksSinceFire > 50) {
 								m_ticksSinceFire = 0; // reset
 								input.m_Fire = true; // fire
-							} else 
+							} else
 								input.m_Fire = false; // do not shoot by default
 						}
 						else if (GameServer()->m_pController->IsInstagib()) {
 							if (m_isBot >= 6 || (m_isBot == 5 && m_ticksSinceFire > 5 + g_Config.m_SvLaserReloadTime / Server()->TickSpeed()) || m_ticksSinceFire > 20+g_Config.m_SvLaserReloadTime / Server()->TickSpeed()) {
 								m_ticksSinceFire = 0; // reset
 								input.m_Fire = true; // fire
-							} else 
+							} else
 								input.m_Fire = false; // do not shoot by default
 						}
 						else {
 							if (m_ticksSinceFire > 10) { // 10 = 0.2s
 								m_ticksSinceFire = 0; // reset
 								input.m_Fire = true; // fire
-							} else 
+							} else
 								input.m_Fire = false; // do not shoot by default
 							if (m_isBot >= 5)
 								input.m_Fire = GameServer()->Server()->Tick() % (2) == 1;

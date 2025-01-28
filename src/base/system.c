@@ -1830,7 +1830,7 @@ void gui_messagebox(const char *title, const char *message)
 
 int str_isspace(char c) { return c == ' ' || c == '\n' || c == '\t'; }
 
-#include "UTF8-letter-cases.h"
+#include "utf8.h"
 
 int str_isupper(int c)
 {

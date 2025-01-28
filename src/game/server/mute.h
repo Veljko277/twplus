@@ -8,7 +8,7 @@
 #ifndef GAME_SERVER_MUTE_H
 #define GAME_SERVER_MUTE_H
 
-#include <base/List.h>
+#include <base/list.h>
 #include <engine/shared/config.h>
 #include <engine/console.h>
 

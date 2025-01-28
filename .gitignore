@@ -8,11 +8,10 @@ objs
 src/game/generated
 .vscode
 src/.vscode
-SDL.dll
-freetype.dll
 autoexec.cfg
 autoexec_server.log
 Info.plist
+build
 
 crapnet*
 dilate*
@@ -41,6 +40,5 @@ CMakeCache.txt
 CMakeFiles/
 CPackConfig.cmake
 CPackSourceConfig.cmake
-Makefile
 cmake_install.cmake
 install_manifest.txt
