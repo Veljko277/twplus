@@ -61,7 +61,7 @@ else()
   set(TARGET_ARCH)
 endif()
 
-set(AUTO_DEPENDENCIES_DEFAULT OFF)
+set(AUTO_DEPENDENCIES_DEFAULT ON)
 option(PREFER_BUNDLED_LIBS "Prefer bundled libraries over system libraries" ${AUTO_DEPENDENCIES_DEFAULT})
 option(DEV "Don't generate stuff necessary for packaging" OFF)
 
