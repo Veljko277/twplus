@@ -420,7 +420,7 @@ void CGameContext::SwapTeams()
 {
 	if(!m_pController->IsTeamplay())
 		return;
-	
+
 	SendChat(-1, CGameContext::CHAT_ALL, "Teams were swapped");
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
@@ -600,7 +600,7 @@ void CGameContext::OnClientEnter(int ClientID)
 {
 	//world.insert_entity(&players[client_id]);
 	std::string name = Server()->ClientName(ClientID);
-	
+
 	//Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", Server()->ClientName(ClientID));
 	//std::cout << m_playerNames[ClientID] << "=?" << name << "\n";
 	// spectator stay spectator after map change
@@ -710,7 +710,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 			CNetMsg_Cl_Say *pMsg = (CNetMsg_Cl_Say *)pRawMsg;
 			int Team = pMsg->m_Team ? pPlayer->GetTeam() : CGameContext::CHAT_ALL;
-			
+
 			// trim right and set maximum length to 128 utf8-characters //updated to 512
 			int Length = 0;
 			const char *p = pMsg->m_pMessage;
@@ -1469,7 +1469,7 @@ void CGameContext::ConShuffleTeams(IConsole::IResult *pResult, void *pUserData)
 		if(pSelf->m_apPlayers[i] && pSelf->m_apPlayers[i]->GetTeam() != TEAM_SPECTATORS)
 			++PlayerTeam;
 	PlayerTeam = (PlayerTeam+1)/2;
-	
+
 	pSelf->SendChat(-1, CGameContext::CHAT_ALL, "Teams were shuffled");
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
@@ -1481,7 +1481,7 @@ void CGameContext::ConShuffleTeams(IConsole::IResult *pResult, void *pUserData)
 			else if(CounterBlue == PlayerTeam)
 				pSelf->m_apPlayers[i]->SetTeam(TEAM_RED, false);
 			else
-			{	
+			{
 				if(rand() % 2)
 				{
 					pSelf->m_apPlayers[i]->SetTeam(TEAM_BLUE, false);
@@ -2154,7 +2154,7 @@ void CGameContext::ConRemoveBot(IConsole::IResult *pResult, void *pUserData)
 	int id = g_Config.m_SvMaxClients - pSelf->m_pServer->m_numberBots;
 	pSelf->OnClientDrop(id, "removed by bot remove command");
 	pSelf->m_pServer->m_numberBots--;
-	
+
 }
 
 void CGameContext::OnConsoleInit()
@@ -2233,9 +2233,9 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	//players = new CPlayer[MAX_CLIENTS];
 
 	// select gametype
-	if(str_comp_nocase(g_Config.m_SvGametype, "mod") == 0)
-		m_pController = new CGameControllerMOD(this);
-	else if(!str_comp_nocase(g_Config.m_SvGametype, "ictf") || !str_comp_nocase(g_Config.m_SvGametype, "ictf+") ||
+	//if(str_comp_nocase(g_Config.m_SvGametype, "mod") == 0)
+	m_pController = new CGameControllerMOD(this);
+/*	else if(!str_comp_nocase(g_Config.m_SvGametype, "ictf") || !str_comp_nocase(g_Config.m_SvGametype, "ictf+") ||
 		(!str_comp_nocase(g_Config.m_SvGametype, "ctf") && g_Config.m_SvInstagib == 1))		// iCTF
 		m_pController = new CGameControllerCTF(this, IGameController::GAMETYPE_INSTAGIB);
 	else if(!str_comp_nocase(g_Config.m_SvGametype, "idm") || !str_comp_nocase(g_Config.m_SvGametype, "idm+") ||
@@ -2245,7 +2245,7 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		(!str_comp_nocase(g_Config.m_SvGametype, "tdm") && g_Config.m_SvInstagib == 1))		// iTDM
 		m_pController = new CGameControllerTDM(this, IGameController::GAMETYPE_INSTAGIB);
 
-	else if(!str_comp_nocase(g_Config.m_SvGametype, "gctf") || !str_comp_nocase(g_Config.m_SvGametype, "gctf+") || 
+	else if(!str_comp_nocase(g_Config.m_SvGametype, "gctf") || !str_comp_nocase(g_Config.m_SvGametype, "gctf+") ||
 		(!str_comp_nocase(g_Config.m_SvGametype, "ctf") && g_Config.m_SvInstagib == 2))		// gCTF
 		m_pController = new CGameControllerGCTF(this, IGameController::GAMETYPE_GCTF|IGameController::GAMETYPE_INSTAGIB);
 	else if(!str_comp_nocase(g_Config.m_SvGametype, "gdm") || !str_comp_nocase(g_Config.m_SvGametype, "gdm+") ||
@@ -2260,7 +2260,7 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		m_pController = new CGameControllerIFreeze(this, IGameController::GAMETYPE_IFREEZE|IGameController::GAMETYPE_INSTAGIB|IGameController::GAMETYPE_GCTF);
 	else if(!str_comp_nocase(g_Config.m_SvGametype, "ifreeze") || !str_comp_nocase(g_Config.m_SvGametype, "ifreeze+"))	// iFreeze
 		m_pController = new CGameControllerIFreeze(this, IGameController::GAMETYPE_IFREEZE|IGameController::GAMETYPE_INSTAGIB);
-	
+
 
 	else if(str_comp_nocase(g_Config.m_SvGametype, "ghtf") == 0 || !str_comp_nocase(g_Config.m_SvGametype, "ghtf+") ||
 		(!str_comp_nocase(g_Config.m_SvGametype, "htf") && g_Config.m_SvInstagib == 2))		// gHTF
@@ -2270,7 +2270,7 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		m_pController = new CGameControllerHTF(this, IGameController::GAMETYPE_INSTAGIB);
 	else if(str_comp_nocase(g_Config.m_SvGametype, "htf") == 0 || !str_comp_nocase(g_Config.m_SvGametype, "htf+"))		// HTF
 		m_pController = new CGameControllerHTF(this, IGameController::GAMETYPE_VANILLA);
-	
+
 	else if(str_comp_nocase(g_Config.m_SvGametype, "gthtf") == 0 || !str_comp_nocase(g_Config.m_SvGametype, "gthtf+") ||
 		(!str_comp_nocase(g_Config.m_SvGametype, "thtf") && g_Config.m_SvInstagib == 2))		// gHTF (team)
 		m_pController = new CGameControllerGHTF(this, IGameController::GAMETYPE_GCTF|IGameController::GAMETYPE_INSTAGIB | IGameController::GAMETYPE_ISTEAM);
@@ -2307,7 +2307,7 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 		m_pController = new CGameControllerTDM(this, IGameController::GAMETYPE_VANILLA);
 	else
 		m_pController = new CGameControllerDM(this, IGameController::GAMETYPE_VANILLA);
-
+*/
 	// setup core world
 	//for(int i = 0; i < MAX_CLIENTS; i++)
 	//	game.players[i].core.world = &game.world.core;
@@ -2402,7 +2402,7 @@ void CGameContext::OnSnap(int ClientID)
 		m_pController->Snap(ClientID);
 		m_Events.Snap(ClientID);
 
-		
+
 		for(int i = 0; i < MAX_CLIENTS; i++)
 		{
 			if(m_apPlayers[i])
@@ -2434,18 +2434,15 @@ void CGameContext::OnSnap(int ClientID)
 	}
 }
 void CGameContext::OnPreSnap() {}
-void CGameContext::OnPostSnap()
-{
+void CGameContext::OnPostSnap() {
 	m_Events.Clear();
 }
 
-bool CGameContext::IsClientReady(int ClientID)
-{
+bool CGameContext::IsClientReady(int ClientID)  {
 	return m_apPlayers[ClientID] && m_apPlayers[ClientID]->m_IsReady ? true : false;
 }
 
-bool CGameContext::IsClientPlayer(int ClientID)
-{
+bool CGameContext::IsClientPlayer(int ClientID) {
 	return m_apPlayers[ClientID] && m_apPlayers[ClientID]->GetTeam() == TEAM_SPECTATORS ? false : true;
 }
 

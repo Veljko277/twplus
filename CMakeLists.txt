@@ -82,9 +82,9 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
 
 set(SERVER_EXECUTABLE server CACHE STRING "Name of the built server executable")
 
-########################################################################
-# Compiler flags
-########################################################################
+#########################################################################
+# Compiler flags                                                        #
+#########################################################################
 
 function(add_c_compiler_flag_if_supported VARIABLE FLAG)
   if(ARGC GREATER 2)
@@ -174,18 +174,17 @@ function(set_glob VAR GLOBBING DIRECTORY) # ...
   set(${VAR} ${FILES} PARENT_SCOPE)
 endfunction()
 
-########################################################################
-# INITIALIZE TARGET LISTS
-########################################################################
+#########################################################################
+# INITIALIZE TARGET LISTS                                               #
+#########################################################################
 
 set(TARGETS_OWN)
 set(TARGETS_DEP)
-
 set(TARGETS_LINK) # Targets with a linking stage.
 
-########################################################################
-# DEPENDENCIES
-########################################################################
+#########################################################################
+# DEPENDENCIES                                                          #
+#########################################################################
 
 function(set_extra_dirs_lib VARIABLE NAME)
   set("PATHS_${VARIABLE}_LIBDIR" PARENT_SCOPE)
@@ -265,16 +264,16 @@ if(NOT(PYTHONINTERP_FOUND))
   message(SEND_ERROR "You must install Python to compile Teeworlds")
 endif()
 
-
-########################################################################
-# COPY DATA
-########################################################################
+#########################################################################
+# COPY DATA                                                             #
+#########################################################################
 
 file(COPY maps DESTINATION .)
+file(COPY autoexec.cfg DESTINATION .)
 
-########################################################################
-# CODE GENERATION
-########################################################################
+#########################################################################
+# CODE GENERATION                                                       #
+#########################################################################
 
 function(chash output_file)
   add_custom_command(OUTPUT ${output_file}
@@ -312,9 +311,9 @@ generate_source("src/game/generated/server_data.cpp" "server_content_source")
 generate_source("src/game/generated/server_data.h" "server_content_header")
 
 
-########################################################################
-# SHARED
-########################################################################
+#########################################################################
+# SHARED                                                                #
+#########################################################################
 
 # Sources
 set_glob(BASE GLOB_RECURSE src/base
@@ -336,21 +335,13 @@ set_glob(ENGINE_INTERFACE GLOB src/engine
   config.h
   console.h
   demo.h
-  #editor.h
   engine.h
-  #friends.h
-  #graphics.h
-  #input.h
   kernel.h
-  #keys.h
   map.h
   masterserver.h
   message.h
   server.h
-  #serverbrowser.h
-  #sound.h
   storage.h
-  #textrender.h
 )
 set_glob(ENGINE_SHARED GLOB src/engine/shared
   compression.cpp
@@ -408,8 +399,6 @@ set_glob(GAME_SHARED GLOB src/game
   gamecore.h
   layers.cpp
   layers.h
-  #localization.cpp
-  #localization.h
   mapitems.h
   tuning.h
   variables.h
@@ -431,14 +420,9 @@ add_library(engine-shared EXCLUDE_FROM_ALL OBJECT ${ENGINE_INTERFACE} ${ENGINE_S
 add_library(game-shared EXCLUDE_FROM_ALL OBJECT ${GAME_SHARED} ${GAME_GENERATED_SHARED})
 list(APPEND TARGETS_OWN engine-shared game-shared)
 
-
-########################################################################
-# CLIENT
-########################################################################
-
-########################################################################
-# SERVER
-########################################################################
+#########################################################################
+# SERVER                                                                #
+#########################################################################
 
 # Sources
 set_glob(ENGINE_SERVER GLOB src/engine/server
@@ -520,9 +504,9 @@ target_link_libraries(${TARGET_SERVER} ${LIBS_SERVER})
 list(APPEND TARGETS_OWN ${TARGET_SERVER})
 list(APPEND TARGETS_LINK ${TARGET_SERVER})
 
-########################################################################
-# VARIOUS TARGETS
-########################################################################
+#########################################################################
+# VARIOUS TARGETS                                                       #
+#########################################################################
 
 set_glob(MASTERSRV_SRC GLOB src/engine/mastersrv mastersrv.cpp mastersrv.h)
 set_glob(VERSIONSRV_SRC GLOB src/engine/versionsrv mapversions.h versionsrv.cpp versionsrv.h)
@@ -539,9 +523,9 @@ target_link_libraries(${TARGET_VERSIONSRV} ${LIBS})
 list(APPEND TARGETS_OWN ${TARGET_MASTERSRV} ${TARGET_VERSIONSRV})
 list(APPEND TARGETS_LINK ${TARGET_MASTERSRV} ${TARGET_VERSIONSRV})
 
-########################################################################
-# INSTALLATION
-########################################################################
+#########################################################################
+# INSTALLATION                                                          #
+#########################################################################
 
 function(escape_regex VAR STRING)
   string(REGEX REPLACE "([][^$.+*?|()\\\\])" "\\\\\\1" ESCAPED "${STRING}")
@@ -788,7 +772,7 @@ foreach(target ${TARGETS_LINK})
   if(MSVC)
     set_property(TARGET ${target} APPEND PROPERTY LINK_FLAGS /SAFESEH:NO) # Disable SafeSEH because the shipped libraries don't support it (would cause error LNK2026 otherwise).
   endif()
-  if((MINGW OR TARGET_OS STREQUAL "linux") AND PREFER_BUNDLED_LIBS)
+  if((MINGW) AND PREFER_BUNDLED_LIBS)
     # Statically link the standard libraries with on MinGW/Linux so we don't
     # have to ship them as DLLs.
     target_link_libraries(${target} -static-libgcc)

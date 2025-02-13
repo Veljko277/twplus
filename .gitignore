@@ -8,7 +8,6 @@ objs
 src/game/generated
 .vscode
 src/.vscode
-autoexec.cfg
 autoexec_server.log
 Info.plist
 build

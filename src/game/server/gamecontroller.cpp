@@ -19,7 +19,7 @@ IGameController::IGameController(class CGameContext *pGameServer)
 {
 	m_pGameServer = pGameServer;
 	m_pServer = m_pGameServer->Server();
-	m_pGameType = "unknown";
+	m_pGameType = "GameTypeHere";
 
 	//
 	DoWarmup(g_Config.m_SvWarmup);
@@ -154,7 +154,7 @@ bool IGameController::OnEntity(int Index, vec2 Pos)
 			{Type = POWERUP_ARMOR; SubType = 1;}
 		else if(Index == ENTITY_HEALTH_5)
 			{Type = POWERUP_HEALTH; SubType = 1;}
-		if (!IsNoPickups()) 
+		if (!IsNoPickups())
 		{
 			if(Index == ENTITY_WEAPON_SHOTGUN)
 			{
@@ -191,7 +191,7 @@ bool IGameController::OnEntity(int Index, vec2 Pos)
 				Type = POWERUP_WEAPON;
 				SubType = WEAPON_GUN_SUPER;
 			}
-		}	
+		}
 	}
 	if(Index == ENTITY_GRENADE_FOUNTAIN)
 	{
@@ -244,7 +244,7 @@ void IGameController::EndRound()
 		std::string name = Server()->ClientName(i);
 		Server()->m_playerNames[i] = name;
 		//GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", Server()->ClientName(i));
-		
+
 		if (name.compare("(invalid)") != 0 && name.compare("(connecting)") != 0) {
 			if (GameServer()->m_apPlayers[i]->GetTeam() != TEAM_SPECTATORS) {
 				std::string name = "(invalid)";
@@ -801,13 +801,13 @@ void IGameController::Snap(int SnappingClient)
 		pGameInfoEx->m_Flags |= GAMEINFOFLAG_ALLOW_ZOOM;
 	if (g_Config.m_SvGrenadeAmmo == -1 && IsGrenade())
 		pGameInfoEx->m_Flags |= GAMEINFOFLAG_UNLIMITED_AMMO;
-	pGameInfoEx->m_Flags2 = 
+	pGameInfoEx->m_Flags2 =
 		GAMEINFOFLAG2_HUD_AMMO;
 	if (!(g_Config.m_SvDDInstagibHideHealth && IsInstagib()))
 		pGameInfoEx->m_Flags2 |= GAMEINFOFLAG2_HUD_HEALTH_ARMOR;
 	if (g_Config.m_SvDDShowHud)
 		pGameInfoEx->m_Flags2 |= GAMEINFOFLAG2_HUD_DDRACE;
-		
+
 	pGameInfoEx->m_Version = 8;
 
 	// This object needs to be snapped alongside pGameInfoObj for that object to work properly
