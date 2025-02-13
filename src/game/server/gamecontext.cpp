@@ -15,6 +15,8 @@
 #include <game/gamecore.h>
 #include <string>
 
+#include "tick.h"
+/*
 #include "gamemodes/dm.h"
 #include "gamemodes/tdm.h"
 #include "gamemodes/ctf.h"
@@ -24,7 +26,7 @@
 #include "gamemodes/htf.h"
 #include "gamemodes/lms.h"
 #include "gamemodes/ndm.h"
-
+*/
 enum
 {
 	RESET,
@@ -2315,9 +2317,6 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	// create all entities from the game layer
 	CMapItemLayerTilemap *pTileMap = m_Layers.GameLayer();
 	CTile *pTiles = (CTile *)Kernel()->RequestInterface<IMap>()->GetData(pTileMap->m_Data);
-
-
-
 
 	/*
 	num_spawn_points[0] = 0;

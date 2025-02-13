@@ -20,5 +20,5 @@ This is a foundation for single gametype teeworlds mod (with some ddnet features
 **Changelog**
 -----------------------
 
-*30th jan*
+* Prefer ninja
 * Removed gametypes

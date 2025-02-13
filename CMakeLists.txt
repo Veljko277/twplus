@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.19)
 
 file(STRINGS src/game/version.h VERSION_LINE
   LIMIT_COUNT 1
@@ -103,39 +103,35 @@ function(add_c_compiler_flag_if_supported VARIABLE FLAG)
   endif()
 endfunction()
 
-if(NOT MSVC)
-  # Protect the stack pointer.
-  # -fstack-protector-all doesn't work on MinGW.
-  add_c_compiler_flag_if_supported(OUR_FLAGS -fstack-protector-all)
+# Protect the stack pointer.
+# -fstack-protector-all doesn't work on MinGW.
+add_c_compiler_flag_if_supported(OUR_FLAGS -fstack-protector-all)
 
-  # Inaccurate floating point numbers cause problems on mingw-w64-gcc when
-  # compiling for x86, might cause problems elsewhere. So don't store floats
-  # in registers but keep them at higher accuracy.
+# Inaccurate floating point numbers cause problems on mingw-w64-gcc when
+# compiling for x86, might cause problems elsewhere. So don't store floats
+# in registers but keep them at higher accuracy.
 
-  if(TARGET_ARCH STREQUAL "x86")
-    add_c_compiler_flag_if_supported(OUR_FLAGS -ffloat-store)
-  endif()
-
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wall)
-  if(CMAKE_VERSION VERSION_GREATER 3.3 OR CMAKE_VERSION VERSION_EQUAL 3.3)
-    add_c_compiler_flag_if_supported(OUR_FLAGS_OWN
-      $<$<COMPILE_LANGUAGE:C>:-Wdeclaration-after-statement>
-      -Wdeclaration-after-statement
-    )
-  endif()
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wextra)
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-unused-parameter)
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-missing-field-initializers)
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wformat=2) # Warn about format strings.
-  add_c_compiler_flag_if_supported(OUR_FLAGS_DEP -Wno-implicit-function-declaration)
+if(TARGET_ARCH STREQUAL "x86")
+  add_c_compiler_flag_if_supported(OUR_FLAGS -ffloat-store)
 endif()
-
-if(NOT MSVC)
-  check_c_compiler_flag("-O2;-Wp,-Werror;-D_FORTIFY_SOURCE=2" DEFINE_FORTIFY_SOURCE) # Some distributions define _FORTIFY_SOURCE by themselves.
+add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wall)
+if(CMAKE_VERSION VERSION_GREATER 3.3 OR CMAKE_VERSION VERSION_EQUAL 3.3)
+  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN
+    $<$<COMPILE_LANGUAGE:C>:-Wdeclaration-after-statement>
+    -Wdeclaration-after-statement
+  )
 endif()
+add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wextra)
+add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-unused-parameter)
+add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-missing-field-initializers)
+add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wformat=2) # Warn about format strings.
+add_c_compiler_flag_if_supported(OUR_FLAGS_DEP -Wno-implicit-function-declaration)
+
+
+check_c_compiler_flag("-O2;-Wp,-Werror;-D_FORTIFY_SOURCE=2" DEFINE_FORTIFY_SOURCE) # Some distributions define _FORTIFY_SOURCE by themselves.
 
 ########################################################################
-# COMMON FUNCTIONS
+# COMMON FUNCTIONS                                                     #
 ########################################################################
 
 function(set_glob VAR GLOBBING DIRECTORY) # ...
@@ -318,9 +314,12 @@ generate_source("src/game/generated/server_data.h" "server_content_header")
 # Sources
 set_glob(BASE GLOB_RECURSE src/base
   detect.h
+  list.h
   math.h
   system.c
   system.h
+  utf8.h
+  vmath.h
   tl/algorithm.h
   tl/allocator.h
   tl/array.h
@@ -329,7 +328,6 @@ set_glob(BASE GLOB_RECURSE src/base
   tl/sorted_array.h
   tl/string.h
   tl/threading.h
-  vmath.h
 )
 set_glob(ENGINE_INTERFACE GLOB src/engine
   config.h
@@ -459,24 +457,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   gamecontext.h
   gamecontroller.cpp
   gamecontroller.h
-  gamemodes/ctf.cpp
-  gamemodes/ctf.h
-  gamemodes/dm.cpp
-  gamemodes/dm.h
-  gamemodes/mod.cpp
-  gamemodes/mod.h
-  gamemodes/tdm.cpp
-  gamemodes/tdm.h
-  gamemodes/htf.cpp
-  gamemodes/htf.h
-  gamemodes/lms.cpp
-  gamemodes/lms.h
-  gamemodes/ndm.cpp
-  gamemodes/ndm.h
-  gamemodes/grenade.cpp
-  gamemodes/grenade.h
-  gamemodes/ifreeze.cpp
-  gamemodes/ifreeze.h
+  tick.cpp
+  tick.h
   gameworld.cpp
   gameworld.h
   player.cpp
@@ -732,9 +714,9 @@ unset(CPACK_FILES)
 
 include(CPack)
 
-########################################################################
-# COMPILER-SPECIFICS
-########################################################################
+#########################################################################
+# COMPILER-SPECIFICS                                                    #
+#########################################################################
 
 # In the future (CMake 3.8.0+), use source_group(TREE ...)
 macro(source_group_tree dir)
@@ -753,13 +735,6 @@ source_group_tree(src)
 set(TARGETS ${TARGETS_OWN} ${TARGETS_DEP})
 
 foreach(target ${TARGETS})
-  if(MSVC)
-    target_compile_options(${target} PRIVATE $<$<NOT:${DBG}>:/MT> $<${DBG}:/MTd>) # Use static CRT
-    target_compile_options(${target} PRIVATE /MP) # Use multiple cores
-    target_compile_options(${target} PRIVATE /EHsc) # Only catch C++ exceptions with catch.
-    target_compile_options(${target} PRIVATE /GS) # Protect the stack pointer.
-    target_compile_options(${target} PRIVATE /wd4996) # Use of non-_s functions.
-  endif()
   if(OUR_FLAGS)
     target_compile_options(${target} PRIVATE ${OUR_FLAGS})
   endif()
@@ -769,9 +744,6 @@ foreach(target ${TARGETS})
 endforeach()
 
 foreach(target ${TARGETS_LINK})
-  if(MSVC)
-    set_property(TARGET ${target} APPEND PROPERTY LINK_FLAGS /SAFESEH:NO) # Disable SafeSEH because the shipped libraries don't support it (would cause error LNK2026 otherwise).
-  endif()
   if((MINGW) AND PREFER_BUNDLED_LIBS)
     # Statically link the standard libraries with on MinGW/Linux so we don't
     # have to ship them as DLLs.
@@ -786,11 +758,6 @@ foreach(target ${TARGETS_LINK})
 endforeach()
 
 foreach(target ${TARGETS_OWN})
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /wd4244) # Possible loss of data (float -> int, int -> float, etc.).
-    target_compile_options(${target} PRIVATE /wd4267) # Possible loss of data (size_t - int on win64).
-    target_compile_options(${target} PRIVATE /wd4800) # Implicit conversion of int to bool.
-  endif()
   if(OUR_FLAGS_OWN)
     target_compile_options(${target} PRIVATE ${OUR_FLAGS_OWN})
   endif()
@@ -802,9 +769,6 @@ foreach(target ${TARGETS_OWN})
 endforeach()
 
 foreach(target ${TARGETS_DEP})
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /W0)
-  endif()
   if(OUR_FLAGS_DEP)
     target_compile_options(${target} PRIVATE ${OUR_FLAGS_DEP})
   endif()
