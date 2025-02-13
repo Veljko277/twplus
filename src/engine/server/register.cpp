@@ -6,7 +6,7 @@
 #include <engine/console.h>
 #include <engine/masterserver.h>
 
-#include <engine/mastersrv/mastersrv.h>
+#include <engine/server/misc/mastersrv.h>
 
 #include "register.h"
 

@@ -5,8 +5,8 @@
 
 #include <engine/storage.h>
 
-#include <engine/versionsrv/versionsrv.h>
-#include <engine/versionsrv/mapversions.h>
+#include <engine/server/misc/versionsrv.h>
+#include <engine/server/misc/mapversions.h>
 
 #include "datafile.h"
 #include "memheap.h"

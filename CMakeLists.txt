@@ -428,6 +428,9 @@ set_glob(ENGINE_SERVER GLOB src/engine/server
   register.h
   server.cpp
   server.h
+  misc/versionsrv.h
+  misc/mapversions.h
+  misc/mastersrv.h
 )
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entities/character.cpp
@@ -485,25 +488,6 @@ add_executable(${TARGET_SERVER}
 target_link_libraries(${TARGET_SERVER} ${LIBS_SERVER})
 list(APPEND TARGETS_OWN ${TARGET_SERVER})
 list(APPEND TARGETS_LINK ${TARGET_SERVER})
-
-#########################################################################
-# VARIOUS TARGETS                                                       #
-#########################################################################
-
-set_glob(MASTERSRV_SRC GLOB src/engine/mastersrv mastersrv.cpp mastersrv.h)
-set_glob(VERSIONSRV_SRC GLOB src/engine/versionsrv mapversions.h versionsrv.cpp versionsrv.h)
-
-set(TARGET_MASTERSRV mastersrv)
-set(TARGET_VERSIONSRV versionsrv)
-
-add_executable(${TARGET_MASTERSRV} EXCLUDE_FROM_ALL ${MASTERSRV_SRC} $<TARGET_OBJECTS:engine-shared> ${DEPS})
-add_executable(${TARGET_VERSIONSRV} EXCLUDE_FROM_ALL ${VERSIONSRV_SRC} $<TARGET_OBJECTS:engine-shared> ${DEPS})
-
-target_link_libraries(${TARGET_MASTERSRV} ${LIBS})
-target_link_libraries(${TARGET_VERSIONSRV} ${LIBS})
-
-list(APPEND TARGETS_OWN ${TARGET_MASTERSRV} ${TARGET_VERSIONSRV})
-list(APPEND TARGETS_LINK ${TARGET_MASTERSRV} ${TARGET_VERSIONSRV})
 
 #########################################################################
 # INSTALLATION                                                          #
