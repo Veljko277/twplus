@@ -127,6 +127,10 @@ add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-missing-field-initializers)
 add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wformat=2) # Warn about format strings.
 add_c_compiler_flag_if_supported(OUR_FLAGS_DEP -Wno-implicit-function-declaration)
 
+if(CMAKE_GENERATOR STREQUAL "Ninja")
+  add_c_compiler_flag_if_supported(OUR_FLAGS -fdiagnostics-color=always)
+  add_c_compiler_flag_if_supported(OUR_FLAGS -fcolor-diagnostics)
+endif()
 
 check_c_compiler_flag("-O2;-Wp,-Werror;-D_FORTIFY_SOURCE=2" DEFINE_FORTIFY_SOURCE) # Some distributions define _FORTIFY_SOURCE by themselves.
 
